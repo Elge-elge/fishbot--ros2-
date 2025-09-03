@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!--惯量-->
+    <xacro:include filename="$(find fishbot_description)/urdf/fishbot/common_inertia.xacro"/>
+
+    <xacro:macro name="base_xacro" params="radius length">
+        <!--让base中心高于地面，footprint是中心投影-->
+        <link name="base_footprint" />
+        <!-- base -->
+        <link name="base_link">
+            <!-- 部件外观 -->
+            <visual>
+                <!-- 沿着自己几何中心的偏移旋转量 -->
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <!-- 几何形状 -->
+                <geometry>
+                    <!-- 圆柱体 -->
+                    <cylinder radius="${radius}" length="${length}"/>
+                </geometry>
+                <!-- 材质 -->
+                <material name="white">
+                    <color rgba="1.0 1.0 1.0 0.5"/>
+                </material>
+            </visual>
+            <!--碰撞检测-->
+            <collision>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                
+                <geometry>
+                    <cylinder radius="${radius}" length="${length}"/>
+                </geometry>
+            
+                <material name="white">
+                    <color rgba="1.0 1.0 1.0 0.5"/>
+                </material>
+            </collision>
+
+            <!--惯量-->
+            <xacro:cylinder_inertia m="1.0" r="${radius}" h="${length}"/>
+
+        </link>
+        
+        <joint name="joint_name" type="fixed">
+            <origin xyz="0.0 0.0 ${length/2.0+0.032-0.001}" rpy="0.0 0.0 0.0"/>
+            <parent link="base_footprint"/>
+            <child link="base_link"/>
+        </joint>
+
+        <gazebo reference="base_link">
+            <material>Gazebo/Red</material>
+        </gazebo>
+    </xacro:macro>
+</robot>
